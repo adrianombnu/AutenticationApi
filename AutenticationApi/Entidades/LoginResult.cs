@@ -38,12 +38,12 @@ namespace AutenticationApi.Entidades
 
         }
 
-        public AuthenticationException(string message,Exception inner) : base(MESSAGE, inner)
+        public AuthenticationException(Exception inner) : base(MESSAGE, inner)
         {
 
         }
 
-        public AuthenticationException(Exception inner) : base(MESSAGE, inner)
+        public AuthenticationException(string message, Exception inner) : base(message, inner)
         {
 
         }
@@ -54,7 +54,7 @@ namespace AutenticationApi.Entidades
     {
         private const string MESSAGE = "Usário não encontrado";
 
-        public static InvalidUsernameException INVALID_USERNAME_EXECPTION = new InvalidUsernameException(MESSAGE);
+        public static InvalidUsernameException INVALID_USERNAME_EXCEPTION = new InvalidUsernameException(MESSAGE);
 
         public InvalidUsernameException(string message) : base(message)
         {
@@ -73,7 +73,7 @@ namespace AutenticationApi.Entidades
     {
         private const string MESSAGE = "Senha informada é inválida";
 
-        public static InvalidPasswordException INVALID_PASSWORD_EXECPTION = new InvalidPasswordException(MESSAGE);
+        public static InvalidPasswordException INVALID_PASSWORD_EXCEPTION = new InvalidPasswordException(MESSAGE);
 
         public InvalidPasswordException(string message) : base(message)
         {
@@ -92,7 +92,7 @@ namespace AutenticationApi.Entidades
     {
         private const string MESSAGE = "A conta foi bloqueada por exceder o limite de tentativas de login sem sucesso, tente novamente em alguns minutos ou redefina a sua senha.";
 
-        public static UserBlockedException USER_BLOCKED_EXECPTION = new UserBlockedException(MESSAGE);
+        public static UserBlockedException USER_BLOCKED_EXCEPTION = new UserBlockedException(MESSAGE);
 
 
         public UserBlockedException(string message) : base(message)

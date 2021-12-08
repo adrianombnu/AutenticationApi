@@ -68,7 +68,6 @@ namespace AutenticationApi.Repositorio
         {
             try
             {
-
                 var user = _users.Values.Where(u => u.UserName == username && u.Password == password).SingleOrDefault();
 
                 if (user != null)
@@ -77,7 +76,7 @@ namespace AutenticationApi.Repositorio
                     {
                         if (DateTime.Now <= user.LockoutDate?.AddMinutes(15))
                         {
-                            return LoginResult.ErroResult(UserBlockedException.USER_BLOCKED_EXECPTION);
+                            return LoginResult.ErroResult(UserBlockedException.USER_BLOCKED_EXCEPTION);
 
                         }
                         else
@@ -89,7 +88,6 @@ namespace AutenticationApi.Repositorio
                     }
 
                     return LoginResult.SuccessResult(user);
-
 
                 }
 
@@ -106,18 +104,15 @@ namespace AutenticationApi.Repositorio
                         user.IsLockout = true;
                         user.LockoutDate = DateTime.Now;
 
-                        return LoginResult.ErroResult(UserBlockedException.USER_BLOCKED_EXECPTION);
-
+                        return LoginResult.ErroResult(UserBlockedException.USER_BLOCKED_EXCEPTION);
 
                     }
 
-                    return LoginResult.ErroResult(InvalidPasswordException.INVALID_PASSWORD_EXECPTION);
-
+                    return LoginResult.ErroResult(InvalidPasswordException.INVALID_PASSWORD_EXCEPTION);
 
                 }
 
-                return LoginResult.ErroResult(InvalidUsernameException.INVALID_USERNAME_EXECPTION);
-
+                return LoginResult.ErroResult(InvalidUsernameException.INVALID_USERNAME_EXCEPTION);
 
             }
             catch(Exception e)

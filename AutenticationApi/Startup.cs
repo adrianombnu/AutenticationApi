@@ -63,9 +63,37 @@ namespace AutenticationApi
                 });
 
             services.AddControllers();
+
+            //A configuração abaixo é para permitir que no swagger possamos passar o token
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AutenticationApi", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Scheme = "Bearer",
+                    BearerFormat =  "JWT",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Description = "Informe o token no formato Bearer: <token>"
+
+                });
+                c.AddSecurityRequirement(
+                    new OpenApiSecurityRequirement
+                    {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Id = "Bearer",
+                                    Type = ReferenceType.SecurityScheme
+                                },
+
+                            },
+                            new string[]{}
+                        }
+                    });
             });
 
             services.AddSingleton<UserRepository>();
