@@ -32,16 +32,19 @@ namespace AutenticationApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //Sempre encodar a chave para não usar o texto puro
+            //
+            ///////Sempre encodar a chave para não usar o texto puro
             var key = Encoding.ASCII.GetBytes(Configuration.GetValue<string>("Secret"));
 
-            //Aqui estou dizendo que será usado o esquema de autenticacao jwt
+            //
+            ///////Aqui estou dizendo que será usado o esquema de autenticacao jwt
             services.AddAuthentication(options =>
             {
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            //Aqui estou passando as configurações para o jwt
+            //
+            ///////Aqui estou passando as configurações para o jwt
             .AddJwtBearer(options =>
             {
                 options.SaveToken = true;
@@ -64,7 +67,8 @@ namespace AutenticationApi
 
             services.AddControllers();
 
-            //A configuração abaixo é para permitir que no swagger possamos passar o token
+            //
+            ///////A configuração abaixo é para permitir que no swagger possamos passar o token
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AutenticationApi", Version = "v1" });
@@ -96,6 +100,8 @@ namespace AutenticationApi
                     });
             });
 
+            //
+            ///////Somente o user repository precisda ser singleton
             services.AddSingleton<UserRepository>();
             services.AddTransient<UserService>();
             services.AddTransient<JwtTokenService>();
@@ -104,8 +110,7 @@ namespace AutenticationApi
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            
+        {            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -117,7 +122,8 @@ namespace AutenticationApi
 
             app.UseRouting();
 
-            //Sempre nessa ordem, primeiro autentica e depois autoriza
+            //
+            ///////Sempre nessa ordem, primeiro autentica e depois autoriza
             app.UseAuthentication();
 
             app.UseAuthorization();
