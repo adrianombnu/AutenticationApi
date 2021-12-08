@@ -1,7 +1,9 @@
-﻿using AutenticationApi.Entidades;
+﻿using AutenticationApi.DTOs;
+using AutenticationApi.Entidades;
 using AutenticationApi.Repositorio;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AutenticationApi.Services
 {
@@ -16,35 +18,75 @@ namespace AutenticationApi.Services
             _tokenService = tokenService;
         }
 
-        public User Create(User user)
+        public UserDTO Create(User user)
         {
-            return _userRepository.Create(user);
+            var userExists = _userRepository.GetByUsername(user.UserName);
 
-        }
+            if (userExists != null)
+                throw new Exception("O nome do usuário já está sendo utilizado, tente outro!");
 
-        public IEnumerable<User> Get()
-        {
-            return _userRepository.Get();
+            var userCreated = _userRepository.Create(user);
 
-        }
-
-        public User Get(Guid id)
-        {
-            return _userRepository.Get(id);
-
-        }
-
-        public object Login(string username, string password)
-        {
-            var user = _userRepository.Login(username, password);
-            var token = _tokenService.GenerateToken(user);
-
-            user.Password = "";
-
-            return new
+            return new UserDTO
             {
-                user,
-                token
+                Role = userCreated.Role,
+                Username = userCreated.UserName
+            };
+
+        }
+
+        public IEnumerable<UserDTO> Get()
+        {
+            var users = _userRepository.Get();
+
+            return users.Select(u => 
+            {
+                return new UserDTO
+                {
+                    Role = u.Role,
+                    Username = u.UserName
+                };
+            });
+        }
+
+        public UserDTO Get(Guid id)
+        {
+            var user = _userRepository.Get(id);
+
+            return new UserDTO
+            {
+                Role = user.Role,
+                Username = user.UserName
+            };
+
+        }
+
+        public LoginResultDTO Login(string username, string password)
+        {
+            var loginResult = _userRepository.Login(username, password);
+
+            if (loginResult.Error)
+            {
+                return new LoginResultDTO
+                {
+                    Success = false,
+                    Errors = new string[] { $"Ocorreu um erro ao autenticar: {loginResult.Exception?.Message}" }
+                };
+            }
+                        
+            var token = _tokenService.GenerateToken(loginResult.User);
+
+            return new LoginResultDTO
+            {
+               Success = true,
+               User = new UserLoginResultDTO
+               {
+                   Id = loginResult.User.Id,
+                   Role = loginResult.User.Role,
+                   Token = token,
+                   Username = loginResult.User.UserName
+
+               }
             };
 
         }

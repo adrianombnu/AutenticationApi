@@ -29,7 +29,7 @@ namespace AutenticationApi.Services
                     new Claim(ClaimTypes.Role, user.Role),
                     new Claim(ClaimTypes.Name, user.UserName)
                 }),
-                Expires = DateTime.Now.AddMinutes(timelLimitToken),
+                Expires = DateTime.UtcNow.AddMinutes(timelLimitToken),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 

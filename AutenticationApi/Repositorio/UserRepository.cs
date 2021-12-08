@@ -28,6 +28,12 @@ namespace AutenticationApi.Repositorio
 
         }
 
+        public User GetByUsername(string username)
+        {
+            return _users.Values.Where(u => u.UserName == username).FirstOrDefault();
+
+        }
+
         public User Create(User user)
         {
             user.Id = Guid.NewGuid();
@@ -58,16 +64,66 @@ namespace AutenticationApi.Repositorio
             throw new Exception("Usuário não encontrado.");
         }
 
-        public User Login(string username, string password)
+        public LoginResult Login(string username, string password)
         {
-            var user = _users.Values.Where(u => u.UserName == username && u.Password == password).SingleOrDefault();
+            try
+            {
 
-            if (user is null)
-                throw new Exception("Usuário não encontrado.");
+                var user = _users.Values.Where(u => u.UserName == username && u.Password == password).SingleOrDefault();
 
-            return user;
+                if (user != null)
+                {
+                    if (user.IsLockout)
+                    {
+                        if (DateTime.Now <= user.LockoutDate?.AddMinutes(15))
+                        {
+                            return LoginResult.ErroResult(UserBlockedException.USER_BLOCKED_EXECPTION);
+
+                        }
+                        else
+                        {
+                            user.IsLockout = false;
+                            user.LockoutDate = null;
+                            user.FailedAttemps = 0;
+                        }
+                    }
+
+                    return LoginResult.SuccessResult(user);
 
 
+                }
+
+                var userExistsForUsername = _users.Values.Where(u => u.UserName == username).Any();
+
+                if (userExistsForUsername)
+                {
+                    user = _users.Values.Where(u => u.UserName == username).Single();
+
+                    user.FailedAttemps++;
+
+                    if (user.FailedAttemps > 3)
+                    {
+                        user.IsLockout = true;
+                        user.LockoutDate = DateTime.Now;
+
+                        return LoginResult.ErroResult(UserBlockedException.USER_BLOCKED_EXECPTION);
+
+
+                    }
+
+                    return LoginResult.ErroResult(InvalidPasswordException.INVALID_PASSWORD_EXECPTION);
+
+
+                }
+
+                return LoginResult.ErroResult(InvalidUsernameException.INVALID_USERNAME_EXECPTION);
+
+
+            }
+            catch(Exception e)
+            {
+                return LoginResult.ErroResult(new AuthenticationException(e));
+            }
         }
     }
 
