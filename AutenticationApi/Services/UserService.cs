@@ -30,7 +30,9 @@ namespace AutenticationApi.Services
             return new UserDTO
             {
                 Role = userCreated.Role,
-                Username = userCreated.UserName
+                Username = userCreated.UserName,
+                Id = userCreated.Id                
+                
             };
 
         }
@@ -44,7 +46,8 @@ namespace AutenticationApi.Services
                 return new UserDTO
                 {
                     Role = u.Role,
-                    Username = u.UserName
+                    Username = u.UserName,
+                    Id = u.Id 
                 };
             });
         }
@@ -56,7 +59,8 @@ namespace AutenticationApi.Services
             return new UserDTO
             {
                 Role = user.Role,
-                Username = user.UserName
+                Username = user.UserName,
+                Id = user.Id 
             };
 
         }

@@ -2,6 +2,7 @@
 using AutenticationApi.Entidades;
 using AutenticationApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace AutenticationApi.Controllers
 {
@@ -34,7 +35,21 @@ namespace AutenticationApi.Controllers
 
         }
 
-        
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return Ok(_userService.Get());
+
+        }
+
+        [HttpGet, Route("{id}/login")]
+        public IActionResult Get(Guid id)
+        {
+            return Ok(_userService.Get(id));
+
+        }
+
+
 
     }
 }
