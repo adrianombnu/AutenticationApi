@@ -1,3 +1,5 @@
+using AutenticationApi.Repositorio;
+using AutenticationApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -66,6 +68,11 @@ namespace AutenticationApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AutenticationApi", Version = "v1" });
             });
+
+            services.AddSingleton<UserRepository>();
+            services.AddTransient<UserService>();
+            services.AddTransient<JwtTokenService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -20,7 +20,7 @@ namespace AutenticationApi.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("Secret"));
-            var timelLimitToken = int.Parse(_configuration.GetValue<string>("TimelLimitToken"));
+            var timelLimitToken = _configuration.GetValue<int>("TimelLimitToken");
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
