@@ -62,7 +62,6 @@ namespace AutenticationApi.Services
                 Username = user.UserName,
                 Id = user.Id 
             };
-
         }
 
         public LoginResultDTO Login(string username, string password)
