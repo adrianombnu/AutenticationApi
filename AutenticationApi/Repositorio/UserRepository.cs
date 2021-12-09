@@ -40,7 +40,7 @@ namespace AutenticationApi.Repositorio
             if (_users.TryAdd(user.Id, user))
                 return user;
 
-            throw new Exception("");
+            throw new Exception("Não foi possível criar usuário");
         }
 
 
